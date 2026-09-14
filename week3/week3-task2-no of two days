@@ -1,0 +1,29 @@
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter first date (YYYY-MM-DD): ");
+        String date1 = sc.nextLine();
+
+        System.out.print("Enter second date (YYYY-MM-DD): ");
+        String date2 = sc.nextLine();
+
+        LocalDate startDate = LocalDate.parse(date1);
+        LocalDate endDate = LocalDate.parse(date2);
+
+        long days = ChronoUnit.DAYS.between(startDate, endDate);
+
+        // Make the answer positive
+        days = Math.abs(days);
+
+        System.out.println("Number of days between: " + days);
+
+        sc.close();
+    }
+}
