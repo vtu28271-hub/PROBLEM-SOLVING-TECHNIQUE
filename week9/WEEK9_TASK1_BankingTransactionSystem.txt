@@ -1,0 +1,70 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class WEEK9_TASK1_BankingTransactionSystem {
+    public static void main(String[] args) {
+        BankAccount account = new BankAccount("ACC-1001", "Alice Johnson");
+
+        account.deposit(1500.00);
+        account.deposit(250.00);
+        account.withdraw(300.00);
+        account.withdraw(5000.00);
+
+        System.out.println("Current Balance: $" + account.getBalance());
+        account.displayTransactionHistory();
+    }
+
+    static class BankAccount {
+        private final String accountNumber;
+        private final String holderName;
+        private double balance;
+        private final List<String> transactionHistory;
+
+        public BankAccount(String accountNumber, String holderName) {
+            this.accountNumber = accountNumber;
+            this.holderName = holderName;
+            this.balance = 0.0;
+            this.transactionHistory = new ArrayList<>();
+            transactionHistory.add("Account created for " + holderName + ".");
+        }
+
+        public void deposit(double amount) {
+            if (amount <= 0) {
+                System.out.println("Deposit amount must be greater than zero.");
+                return;
+            }
+
+            balance += amount;
+            transactionHistory.add("Deposited: $" + String.format("%.2f", amount));
+            System.out.println("Deposited $" + String.format("%.2f", amount) + " successfully.");
+        }
+
+        public void withdraw(double amount) {
+            if (amount <= 0) {
+                System.out.println("Withdrawal amount must be greater than zero.");
+                return;
+            }
+
+            if (amount > balance) {
+                System.out.println("Insufficient funds. Withdrawal failed.");
+                transactionHistory.add("Failed withdrawal: $" + String.format("%.2f", amount));
+                return;
+            }
+
+            balance -= amount;
+            transactionHistory.add("Withdrew: $" + String.format("%.2f", amount));
+            System.out.println("Withdrew $" + String.format("%.2f", amount) + " successfully.");
+        }
+
+        public double getBalance() {
+            return balance;
+        }
+
+        public void displayTransactionHistory() {
+            System.out.println("\nTransaction History for " + holderName + " (" + accountNumber + "):");
+            for (String entry : transactionHistory) {
+                System.out.println("- " + entry);
+            }
+        }
+    }
+}

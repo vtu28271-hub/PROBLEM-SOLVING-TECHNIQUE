@@ -1,0 +1,94 @@
+import java.util.HashMap;
+import java.util.Map;
+
+public class WEEK9_TASK4_PaymentProcessor {
+    public static void main(String[] args) {
+        PaymentProcessor processor = new PaymentProcessor();
+
+        PaymentCard visa = new PaymentCard("4111111111111111", "12/28", "Alice");
+        PaymentCard invalidCard = new PaymentCard("1234", "11/25", "Bob");
+
+        processor.processPayment(visa, 345.50);
+        processor.processPayment(invalidCard, 50.00);
+
+        System.out.println("\nPayment history:");
+        processor.printPaymentHistory();
+    }
+
+    static class PaymentCard {
+        private final String cardNumber;
+        private final String expiryDate;
+        private final String cardHolderName;
+
+        public PaymentCard(String cardNumber, String expiryDate, String cardHolderName) {
+            this.cardNumber = cardNumber;
+            this.expiryDate = expiryDate;
+            this.cardHolderName = cardHolderName;
+        }
+
+        public String getCardNumber() {
+            return cardNumber;
+        }
+
+        public String getExpiryDate() {
+            return expiryDate;
+        }
+
+        public String getCardHolderName() {
+            return cardHolderName;
+        }
+    }
+
+    static class PaymentProcessor {
+        private final Map<String, String> paymentHistory;
+
+        public PaymentProcessor() {
+            this.paymentHistory = new HashMap<>();
+        }
+
+        public void processPayment(PaymentCard card, double amount) {
+            if (amount <= 0) {
+                System.out.println("Payment failed: amount must be greater than zero.");
+                return;
+            }
+
+            if (!isValidCardNumber(card.getCardNumber())) {
+                System.out.println("Payment failed: invalid card number for " + card.getCardHolderName());
+                paymentHistory.put(card.getCardNumber(), "Failed - invalid card number");
+                return;
+            }
+
+            if (!isValidExpiryDate(card.getExpiryDate())) {
+                System.out.println("Payment failed: expired card for " + card.getCardHolderName());
+                paymentHistory.put(card.getCardNumber(), "Failed - expired card");
+                return;
+            }
+
+            String message = "Approved payment of $" + String.format("%.2f", amount) + " for " + card.getCardHolderName();
+            paymentHistory.put(card.getCardNumber(), message);
+            System.out.println(message);
+        }
+
+        private boolean isValidCardNumber(String cardNumber) {
+            return cardNumber != null && cardNumber.matches("\\d{13,19}");
+        }
+
+        private boolean isValidExpiryDate(String expiryDate) {
+            if (expiryDate == null || !expiryDate.matches("\\d{2}/\\d{2}")) {
+                return false;
+            }
+
+            String[] parts = expiryDate.split("/");
+            int month = Integer.parseInt(parts[0]);
+            int year = Integer.parseInt(parts[1]);
+
+            return month >= 1 && month <= 12 && year >= 25;
+        }
+
+        public void printPaymentHistory() {
+            for (Map.Entry<String, String> entry : paymentHistory.entrySet()) {
+                System.out.println(entry.getKey() + " -> " + entry.getValue());
+            }
+        }
+    }
+}

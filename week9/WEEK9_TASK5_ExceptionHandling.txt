@@ -1,0 +1,63 @@
+public class WEEK9_TASK5_ExceptionHandling {
+    public static void main(String[] args) {
+        BankAccount account = new BankAccount("BA-9001", 500.0);
+
+        try {
+            account.deposit(-50.0);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Deposit error: " + e.getMessage());
+        }
+
+        try {
+            account.withdraw(700.0);
+        } catch (InsufficientFundsException e) {
+            System.out.println("Withdrawal error: " + e.getMessage());
+        }
+
+        try {
+            account.withdraw(200.0);
+            System.out.println("Remaining balance: $" + account.getBalance());
+        } catch (InsufficientFundsException e) {
+            System.out.println("Withdrawal error: " + e.getMessage());
+        }
+    }
+
+    static class BankAccount {
+        private final String accountNumber;
+        private double balance;
+
+        public BankAccount(String accountNumber, double initialBalance) {
+            this.accountNumber = accountNumber;
+            this.balance = initialBalance;
+        }
+
+        public void deposit(double amount) {
+            if (amount <= 0) {
+                throw new IllegalArgumentException("Deposit amount must be greater than zero.");
+            }
+            balance += amount;
+            System.out.println("Deposited $" + String.format("%.2f", amount) + ". New balance: $" + String.format("%.2f", balance));
+        }
+
+        public void withdraw(double amount) throws InsufficientFundsException {
+            if (amount <= 0) {
+                throw new IllegalArgumentException("Withdrawal amount must be greater than zero.");
+            }
+            if (amount > balance) {
+                throw new InsufficientFundsException("Insufficient funds. Current balance: $" + String.format("%.2f", balance));
+            }
+            balance -= amount;
+            System.out.println("Withdrew $" + String.format("%.2f", amount) + ". Remaining balance: $" + String.format("%.2f", balance));
+        }
+
+        public double getBalance() {
+            return balance;
+        }
+    }
+
+    static class InsufficientFundsException extends Exception {
+        public InsufficientFundsException(String message) {
+            super(message);
+        }
+    }
+}

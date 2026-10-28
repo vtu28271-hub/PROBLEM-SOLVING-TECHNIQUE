@@ -1,0 +1,149 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class WEEK9_TASK3_VehicleRentalSystem {
+    public static void main(String[] args) {
+        VehicleRentalSystem rentalSystem = new VehicleRentalSystem();
+
+        rentalSystem.addVehicle(new Vehicle("V-101", "Toyota Corolla", "Sedan", 55.0));
+        rentalSystem.addVehicle(new Vehicle("V-102", "Honda Bike", "Bike", 25.0));
+        rentalSystem.addVehicle(new Vehicle("V-103", "Ford SUV", "SUV", 90.0));
+
+        Customer customer1 = new Customer("C-01", "Maya");
+        Customer customer2 = new Customer("C-02", "David");
+
+        rentalSystem.rentVehicle(customer1, "V-101", 3);
+        rentalSystem.rentVehicle(customer2, "V-101", 2);
+        rentalSystem.rentVehicle(customer2, "V-102", 1);
+
+        rentalSystem.returnVehicle("V-101");
+        rentalSystem.displayAvailableVehicles();
+        System.out.println("\nInvoice for Maya:");
+        System.out.println(rentalSystem.generateInvoice(customer1, "V-101"));
+    }
+
+    static class Vehicle {
+        private final String vehicleId;
+        private final String model;
+        private final String type;
+        private final double dailyRate;
+        private boolean available;
+
+        public Vehicle(String vehicleId, String model, String type, double dailyRate) {
+            this.vehicleId = vehicleId;
+            this.model = model;
+            this.type = type;
+            this.dailyRate = dailyRate;
+            this.available = true;
+        }
+
+        public String getVehicleId() {
+            return vehicleId;
+        }
+
+        public String getModel() {
+            return model;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public double getDailyRate() {
+            return dailyRate;
+        }
+
+        public boolean isAvailable() {
+            return available;
+        }
+
+        public void setAvailable(boolean available) {
+            this.available = available;
+        }
+    }
+
+    static class Customer {
+        private final String customerId;
+        private final String name;
+
+        public Customer(String customerId, String name) {
+            this.customerId = customerId;
+            this.name = name;
+        }
+
+        public String getCustomerId() {
+            return customerId;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+
+    static class VehicleRentalSystem {
+        private final List<Vehicle> vehicles;
+        private final List<String> rentalRecords;
+
+        public VehicleRentalSystem() {
+            this.vehicles = new ArrayList<>();
+            this.rentalRecords = new ArrayList<>();
+        }
+
+        public void addVehicle(Vehicle vehicle) {
+            vehicles.add(vehicle);
+        }
+
+        public void rentVehicle(Customer customer, String vehicleId, int rentalDays) {
+            for (Vehicle vehicle : vehicles) {
+                if (vehicle.getVehicleId().equalsIgnoreCase(vehicleId)) {
+                    if (!vehicle.isAvailable()) {
+                        System.out.println("Vehicle " + vehicleId + " is already rented.");
+                        return;
+                    }
+
+                    vehicle.setAvailable(false);
+                    double total = vehicle.getDailyRate() * rentalDays;
+                    rentalRecords.add(customer.getName() + " rented " + vehicle.getModel() + " for " + rentalDays + " days. Total: $" + String.format("%.2f", total));
+                    System.out.println(customer.getName() + " rented " + vehicle.getModel() + " for " + rentalDays + " day(s). Total: $" + String.format("%.2f", total));
+                    return;
+                }
+            }
+
+            System.out.println("Vehicle not found: " + vehicleId);
+        }
+
+        public void returnVehicle(String vehicleId) {
+            for (Vehicle vehicle : vehicles) {
+                if (vehicle.getVehicleId().equalsIgnoreCase(vehicleId)) {
+                    vehicle.setAvailable(true);
+                    System.out.println("Vehicle " + vehicleId + " returned and is available again.");
+                    return;
+                }
+            }
+            System.out.println("Vehicle not found: " + vehicleId);
+        }
+
+        public void displayAvailableVehicles() {
+            System.out.println("\nAvailable vehicles:");
+            for (Vehicle vehicle : vehicles) {
+                if (vehicle.isAvailable()) {
+                    System.out.println(vehicle.getVehicleId() + " - " + vehicle.getModel() + " (" + vehicle.getType() + ") - $" + String.format("%.2f", vehicle.getDailyRate()) + "/day");
+                }
+            }
+        }
+
+        public String generateInvoice(Customer customer, String vehicleId) {
+            for (Vehicle vehicle : vehicles) {
+                if (vehicle.getVehicleId().equalsIgnoreCase(vehicleId)) {
+                    double cost = vehicle.getDailyRate() * 3;
+                    return "Customer: " + customer.getName() + "\nVehicle: " + vehicle.getModel() + "\nRate: $" + String.format("%.2f", vehicle.getDailyRate()) + "/day\nTotal: $" + String.format("%.2f", cost);
+                }
+            }
+            return "No invoice available for this vehicle.";
+        }
+    }
+
+    static class VehicleRentalSystemUtils {
+        // This class is not needed but keeps the file organized.
+    }
+}

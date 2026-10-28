@@ -1,0 +1,144 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class WEEK9_TASK2_RideSharingPlatformSimulator {
+    public static void main(String[] args) {
+        RideSharingPlatform platform = new RideSharingPlatform();
+
+        platform.registerDriver(new Driver("D101", "Sam", "Downtown", 4.8));
+        platform.registerDriver(new Driver("D102", "Nina", "Uptown", 4.9));
+        platform.registerDriver(new Driver("D103", "Leo", "Midtown", 4.6));
+
+        Rider rider1 = new Rider("R201", "Emma", "Central Station", "Airport");
+        Rider rider2 = new Rider("R202", "Omar", "Old Town", "Tech Park");
+
+        platform.requestRide(rider1);
+        platform.requestRide(rider2);
+
+        System.out.println("\nAvailable drivers in the system:");
+        platform.displayAvailableDrivers();
+    }
+
+    static class Driver {
+        private final String id;
+        private final String name;
+        private final String currentLocation;
+        private final double rating;
+        private boolean available;
+
+        public Driver(String id, String name, String currentLocation, double rating) {
+            this.id = id;
+            this.name = name;
+            this.currentLocation = currentLocation;
+            this.rating = rating;
+            this.available = true;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getCurrentLocation() {
+            return currentLocation;
+        }
+
+        public double getRating() {
+            return rating;
+        }
+
+        public boolean isAvailable() {
+            return available;
+        }
+
+        public void setAvailable(boolean available) {
+            this.available = available;
+        }
+
+        @Override
+        public String toString() {
+            return "Driver{id='" + id + "', name='" + name + "', location='" + currentLocation + "', rating=" + rating + ", available=" + available + "}";
+        }
+    }
+
+    static class Rider {
+        private final String id;
+        private final String name;
+        private final String pickupLocation;
+        private final String destination;
+
+        public Rider(String id, String name, String pickupLocation, String destination) {
+            this.id = id;
+            this.name = name;
+            this.pickupLocation = pickupLocation;
+            this.destination = destination;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getPickupLocation() {
+            return pickupLocation;
+        }
+
+        public String getDestination() {
+            return destination;
+        }
+    }
+
+    static class RideSharingPlatform {
+        private final List<Driver> drivers;
+
+        public RideSharingPlatform() {
+            this.drivers = new ArrayList<>();
+        }
+
+        public void registerDriver(Driver driver) {
+            drivers.add(driver);
+            System.out.println("Driver registered: " + driver.getName());
+        }
+
+        public void requestRide(Rider rider) {
+            Driver assignedDriver = findBestDriver(rider);
+            if (assignedDriver != null) {
+                assignedDriver.setAvailable(false);
+                System.out.println("Ride assigned to " + assignedDriver.getName() + " for " + rider.getName()
+                        + " from " + rider.getPickupLocation() + " to " + rider.getDestination());
+            } else {
+                System.out.println("No driver available for " + rider.getName() + " at the moment.");
+            }
+        }
+
+        private Driver findBestDriver(Rider rider) {
+            Driver bestDriver = null;
+            double bestRating = -1;
+
+            for (Driver driver : drivers) {
+                if (driver.isAvailable() && driver.getCurrentLocation().equalsIgnoreCase(rider.getPickupLocation())) {
+                    if (driver.getRating() > bestRating) {
+                        bestDriver = driver;
+                        bestRating = driver.getRating();
+                    }
+                }
+            }
+
+            return bestDriver;
+        }
+
+        public void displayAvailableDrivers() {
+            for (Driver driver : drivers) {
+                if (driver.isAvailable()) {
+                    System.out.println(driver);
+                }
+            }
+        }
+    }
+}
