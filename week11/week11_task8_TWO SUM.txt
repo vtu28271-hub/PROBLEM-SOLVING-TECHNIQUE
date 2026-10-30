@@ -1,0 +1,18 @@
+import java.util.*;
+
+public class TWO PATH{
+    public static void main(String[] args) {
+        int[] nums = {2, 7, 11, 15};
+        int target = 9;
+        HashMap<Integer, Integer> seen = new HashMap<>();
+
+        for (int i = 0; i < nums.length; i++) {
+            int needed = target - nums[i];
+            if (seen.containsKey(needed)) {
+                System.out.println("[" + seen.get(needed) + ", " + i + "]");
+                return;
+            }
+            seen.put(nums[i], i);
+        }
+    }
+}
