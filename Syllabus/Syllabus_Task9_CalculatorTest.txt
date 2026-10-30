@@ -1,0 +1,60 @@
+import java.util.*;
+
+class Calculator {
+    int add(int a, int b) {
+        return a + b;
+    }
+
+    int divide(int a, int b) {
+        if (b == 0) throw new ArithmeticException("Divide by zero");
+        return a / b;
+    }
+}
+
+public class Syllabus_Task9_CalculatorTest {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        String input = sc.nextLine(); // e.g., "10 + 20"
+        String[] parts = input.split(" ");
+
+        int a = Integer.parseInt(parts[0]);
+        String op = parts[1];
+        int b = Integer.parseInt(parts[2]);
+
+        Calculator calc = new Calculator();
+        boolean testPassed = false;
+
+        try {
+            if (op.equals("+")) {
+                int result = calc.add(a, b);
+                if (result == (a + b)) {
+                    testPassed = true;
+                }
+            } else if (op.equals("/")) {
+                int result = calc.divide(a, b);
+                if (result == (a / b)) {
+                    testPassed = true;
+                }
+            }
+        } catch (Exception e) {
+            testPassed = false;
+        }
+
+        if (testPassed) {
+            System.out.println("Test Passed");
+        } else {
+            System.out.println("Test Failed");
+        }
+
+        sc.close();
+    }
+}
+
+/*
+Sample Input:
+15 + 25
+
+Sample Output:
+Test Passed
+*/
